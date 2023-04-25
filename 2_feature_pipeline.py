@@ -14,7 +14,7 @@ warnings.filterwarnings("ignore")
 LOCAL=True
 
 if LOCAL == False:
-   stub = modal.Stub("air_daily")
+   stub = modal.Stub("air_quality_daily")
    image = modal.Image.debian_slim().pip_install(["hopsworks==3.2.0rc0"]) 
 
    @stub.function(image=image, schedule=modal.Period(days=1), secret=modal.Secret.from_name("jim-hopsworks-ai"))
@@ -128,7 +128,7 @@ if __name__ == "__main__":
     if LOCAL == True :
         g()
     else:
-        stub.deploy("air_daily")
+        stub.deploy("air_quality_daily")
         with stub.run():
             f()
        
