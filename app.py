@@ -12,7 +12,6 @@ import folium
 from streamlit_folium import st_folium
 
 from functions import *
-import features.air_quality
 
 
 
@@ -138,7 +137,6 @@ for continent in target_cities:
             dict_for_streamlit[city_name] = coords
 selected_cities_full_list = []
 
-# +
 with st.form(key="user_inputs"):
     print_fancy_header(text='\n🗺 Here you can choose cities from the drop-down menu',
                        font_size=20, color="#00FFFF")
