@@ -26,4 +26,4 @@ jobs:
         env: 
           HOPSWORKS_API_KEY: ${{ secrets.HOPSWORKS_API_KEY }}
           CONTINENT: "Seattle"
-        run: run: ./scripts/run-feature-pipeline.sh 
+        run: ./scripts/run-feature-pipeline.sh 
