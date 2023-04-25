@@ -29,13 +29,8 @@ def features():
     
     
     today = datetime.date.today()
-    start_day = today - datetime.timedelta(days=1)
-    
-    start_day, str(start_day)
-    
-    
-    
-    today, str(today)
+    end_day = today + datetime.timedelta(days=7)
+    end_day, str(end_day)
     
     
     start_of_cell = time.time()
@@ -46,8 +41,8 @@ def features():
         for city_name, coords in target_cities[continent].items():
             df_ = get_aqi_data_from_open_meteo(city_name=city_name,
                                                coordinates=coords,
-                                               start_date=str(start_day),
-                                               end_date=str(today))
+                                               start_date=str(today),
+                                               end_date=str(end_day))
             df_aq_raw = pd.concat([df_aq_raw, df_]).reset_index(drop=True)
             
     end_of_cell = time.time()
