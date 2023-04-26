@@ -1,0 +1,9 @@
+#!/bin/bash
+
+
+export HOPSWORKS_PROJECT=pydata
+export HOPSWORKS_HOST=35.240.110.235
+export HOPSWORKS_API_KEY=DDDDD
+
+export MODAL_API_KEY=ak-DDDD
+

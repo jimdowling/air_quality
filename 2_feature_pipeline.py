@@ -11,13 +11,13 @@ from functions import *
 import warnings
 warnings.filterwarnings("ignore")
 
-LOCAL=True
+LOCAL=False
 
 if LOCAL == False:
    stub = modal.Stub("air_quality_daily")
    image = modal.Image.debian_slim().pip_install(["hopsworks==3.2.0rc0"]) 
 
-   @stub.function(image=image, schedule=modal.Period(days=1), secret=modal.Secret.from_name("jim-hopsworks-ai"))
+   @stub.function(image=image, schedule=modal.Period(days=1), secret=modal.Secret.from_name("jim-hopsworks-gcp"))
    def f():
        g()
 
@@ -29,8 +29,8 @@ def features():
     
     
     today = datetime.date.today()
-    end_day = today + datetime.timedelta(days=7)
-    end_day, str(end_day)
+    hindcast_day = today - datetime.timedelta(days=1)
+    forecast_day = today + datetime.timedelta(days=7)
     
     
     start_of_cell = time.time()
@@ -41,8 +41,8 @@ def features():
         for city_name, coords in target_cities[continent].items():
             df_ = get_aqi_data_from_open_meteo(city_name=city_name,
                                                coordinates=coords,
-                                               start_date=str(today),
-                                               end_date=str(end_day))
+                                               start_date=str(hindcast_day),
+                                               end_date=str(today))
             df_aq_raw = pd.concat([df_aq_raw, df_]).reset_index(drop=True)
             
     end_of_cell = time.time()
@@ -54,29 +54,17 @@ def features():
     df_aq_update = df_aq_raw
     
     df_aq_update['date'] = pd.to_datetime(df_aq_update['date'])
-    
-    
     df_aq_update = df_aq_update.dropna()
-    
-    
-    today = datetime.date.today()
-    end_day = today + datetime.timedelta(days=7)
-    
-    end_day, str(end_day)
-    
-    
-    start_of_cell = time.time()
     
     df_weather_update = pd.DataFrame()
     
-    
-    
+    start_of_cell = time.time()
     for continent in target_cities:
         for city_name, coords in target_cities[continent].items():
             df_ = get_weather_data_from_open_meteo(city_name=city_name,
                                                    coordinates=coords,
                                                    start_date=str(today),
-                                                   end_date=str(end_day),
+                                                   end_date=str(forecast_day),
                                                    forecast=True)
             df_weather_update = pd.concat([df_weather_update, df_]).reset_index(drop=True)
             
