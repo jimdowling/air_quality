@@ -9,13 +9,14 @@ import json
 import hopsworks
 from functions import *
 import warnings
+from urllib.request import urlopen
 warnings.filterwarnings("ignore")
 
 LOCAL=False
 
 if LOCAL == False:
    stub = modal.Stub("air_quality_daily")
-   image = modal.Image.debian_slim().pip_install(["hopsworks==3.2.0rc0"]) 
+   image = modal.Image.debian_slim().pip_install(["hopsworks==3.2.0rc0", "geopy"]) 
 
    @stub.function(image=image, schedule=modal.Period(days=1), secret=modal.Secret.from_name("jim-hopsworks-gcp"))
    def f():
@@ -24,9 +25,9 @@ if LOCAL == False:
 
 
 def features():
-    with open('target_cities.json') as json_file:
-        target_cities = json.load(json_file)
-    
+    target_url='https://repo.hops.works/dev/jdowling/target_cities.json'
+    response = urlopen(target_url)
+    target_cities = json.loads(response.read())
     
     today = datetime.date.today()
     hindcast_day = today - datetime.timedelta(days=1)
