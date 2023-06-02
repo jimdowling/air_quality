@@ -5,5 +5,4 @@ streamlit
 streamlit-folium
 joblib
 plotly
-# uncomment for github actions
-# nbconvert
+nbconvert
