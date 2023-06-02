@@ -104,8 +104,7 @@ feature_view = get_feature_view()
 
 # I am going to load data for of last 60 days (for feature engineering)
 today = datetime.date.today()
-date_threshold = today 
-#- datetime.timedelta(days=60)
+date_threshold = today - datetime.timedelta(days=65)
 
 st.write(3 * "-")
 print_fancy_header('\n☁️ Retriving batch data from Feature Store...')
