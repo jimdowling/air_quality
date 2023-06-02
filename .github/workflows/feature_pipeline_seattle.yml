@@ -1,4 +1,4 @@
-name: air_quality_feature_pipeline_seattle
+name: air_quality_feature_pipeline
 
 on:
   workflow_dispatch:
