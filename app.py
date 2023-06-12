@@ -114,7 +114,6 @@ batch_data = get_batch_data_from_fs(td_version=1,
 st.write("Batch data:")
 st.write(batch_data.sample(5))            
 
-# +
 saved_model_dir = download_model(
     name="air_quality_xgboost_model",
     version=1
@@ -123,7 +122,6 @@ saved_model_dir = download_model(
 pipeline = joblib.load(saved_model_dir + "/xgboost_pipeline.pkl")
 st.write("\n")
 st.write("✅ Model was downloaded and cached.")
-# -
 
 st.write(3 * '-')
 st.write("\n")
@@ -176,8 +174,6 @@ with st.form(key="user_inputs"):
         pass
     
     submit_button = st.form_submit_button(label='Submit')
-
-# +
 
 if submit_button:
     st.write('Selected cities:', selected_cities_full_list)
