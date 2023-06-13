@@ -19,20 +19,6 @@ def print_fancy_header(text, font_size=22, color="#ff5f27"):
     res = f'<span style="color:{color}; font-size: {font_size}px;">{text}</span>'
     st.markdown(res, unsafe_allow_html=True)  
 
-
-# I want to cache this so streamlit would run much faster after restart (it restarts a lot)
-@st.cache_data()
-def get_feature_view():
-    st.write("Getting the Feature View...")
-    feature_view = fs.get_feature_view(
-        name = 'air_quality_fv',
-        version = 1
-    )
-    st.write("✅ Success!")
-
-    return feature_view
-
-
 @st.cache_data()
 def get_batch_data_from_fs(td_version, date_threshold):
     st.write(f"Retrieving the Batch data since {date_threshold}")
@@ -43,8 +29,7 @@ def get_batch_data_from_fs(td_version, date_threshold):
 
 
 @st.cache_data()
-def download_model(name="air_quality_xgboost_model",
-                   version=1):
+def download_model(name="air_quality_xgboost_model", version=1):
     mr = project.get_model_registry()
     retrieved_model = mr.get_model(
         name="air_quality_xgboost_model",
@@ -100,11 +85,16 @@ project = hopsworks.login()
 fs = project.get_feature_store()
 st.write("✅ Logged in successfully!")
 
-feature_view = get_feature_view()
+st.write("Getting the Feature View...")
+feature_view = fs.get_feature_view(
+    name = 'air_quality_fv',
+    version = 1
+)
+st.write("✅ Success!")
 
 # I am going to load data for of last 60 days (for feature engineering)
 today = datetime.date.today()
-date_threshold = today - datetime.timedelta(days=65)
+date_threshold = today - datetime.timedelta(days=60)
 
 st.write(3 * "-")
 print_fancy_header('\n☁️ Retriving batch data from Feature Store...')
@@ -113,6 +103,7 @@ batch_data = get_batch_data_from_fs(td_version=1,
 
 st.write("Batch data:")
 st.write(batch_data.sample(5))            
+
 
 saved_model_dir = download_model(
     name="air_quality_xgboost_model",
@@ -167,7 +158,7 @@ with st.form(key="user_inputs"):
         print_fancy_header(text=f"You have selected {nearest_city} using map", font_size=18, color="#52fa23")
         
         selected_cities_full_list.append(nearest_city)
-        # st.write(label_encoder.transform([nearest_city])[0])
+        st.write(label_encoder.transform([nearest_city])[0])
 
     except Exception as err:
         print(err)

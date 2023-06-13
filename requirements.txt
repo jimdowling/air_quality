@@ -1,4 +1,4 @@
-hopsworks
+hopsworks==3.2.0rc0
 geopy
 python-dotenv
 streamlit
