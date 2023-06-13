@@ -13,7 +13,7 @@ from urllib.request import urlopen
 warnings.filterwarnings("ignore")
 
 stub = modal.Stub("air_quality_daily")
-image = modal.Image.debian_slim().pip_install(["hopsworks==3.2.0rc0", "geopy"]) 
+image = modal.Image.debian_slim().pip_install(["hopsworks", "geopy"]) 
 
 
 def features():
