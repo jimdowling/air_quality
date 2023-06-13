@@ -12,16 +12,8 @@ import warnings
 from urllib.request import urlopen
 warnings.filterwarnings("ignore")
 
-LOCAL=False
-
-if LOCAL == False:
-   stub = modal.Stub("air_quality_daily")
-   image = modal.Image.debian_slim().pip_install(["hopsworks==3.2.0rc0", "geopy"]) 
-
-   @stub.function(image=image, schedule=modal.Period(days=1), secret=modal.Secret.from_name("jim-hopsworks-gcp"))
-   def f():
-       g()
-
+stub = modal.Stub("air_quality_daily")
+image = modal.Image.debian_slim().pip_install(["hopsworks==3.2.0rc1"]) 
 
 
 def features():
@@ -87,17 +79,18 @@ def features():
     
     return df_aq_update, df_weather_update
 
+@stub.function(image=image, schedule=modal.Period(days=1), secret=modal.Secret.from_name("jim-hopsworks-gcp"))
 def g():
     df_aq_update, df_weather_update = features()
     
     project = hopsworks.login()
     fs = project.get_feature_store() 
     
-    air_quality_fg = fs.get_or_create_feature_group(
+    air_quality_fg = fs.get_feature_group(
         name = 'air_quality',
         version = 1
        )
-    weather_fg = fs.get_or_create_feature_group(
+    weather_fg = fs.get_feature_group(
         name = 'weather',
         version = 1
        )
@@ -109,10 +102,7 @@ def g():
 
 
 if __name__ == "__main__":
-    if LOCAL == True :
+    stub.deploy("air_quality_daily")
+    with stub.run():
         g()
-    else:
-        stub.deploy("air_quality_daily")
-        with stub.run():
-            f()
        
