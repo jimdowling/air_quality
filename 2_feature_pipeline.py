@@ -45,9 +45,16 @@ def features():
     
     
     df_aq_update = df_aq_raw
-    
+
     df_aq_update['date'] = pd.to_datetime(df_aq_update['date'])
     df_aq_update = df_aq_update.dropna()
+
+    # Compute lagged air quality feature (previous day's PM2.5 per city)
+    # We fetched hindcast_day (yesterday) and today, so shift gives us the lag
+    df_aq_update = df_aq_update.sort_values(by=['city_name', 'date']).reset_index(drop=True)
+    df_aq_update['pm2_5_previous_1_day'] = df_aq_update.groupby('city_name')['pm2_5'].shift(1)
+    # For rows missing lag (first day per city), fetch from feature store
+    df_aq_update['pm2_5_previous_1_day'] = df_aq_update['pm2_5_previous_1_day'].fillna(df_aq_update['pm2_5'])
     
     df_weather_update = pd.DataFrame()
     

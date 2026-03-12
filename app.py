@@ -88,7 +88,7 @@ st.write("✅ Logged in successfully!")
 st.write("Getting the Feature View...")
 feature_view = fs.get_feature_view(
     name = 'air_quality_fv',
-    version = 1
+    version = 4
 )
 st.write("✅ Success!")
 
@@ -172,8 +172,13 @@ if submit_button:
     st.write(3*'-')
    
     dataset = batch_data
-  
+
     dataset = dataset.sort_values(by=["city_name", "date"])
+
+    # Fill any missing lagged values for forecast rows
+    if 'pm2_5_previous_1_day' in dataset.columns:
+        dataset['pm2_5_previous_1_day'] = dataset.groupby('city_name')['pm2_5_previous_1_day'].ffill()
+        dataset['pm2_5_previous_1_day'] = dataset['pm2_5_previous_1_day'].bfill()
 
     st.write("\n")
     print_fancy_header(text='\n🧠 Predicting PM2.5 for selected cities...',
